@@ -10,4 +10,8 @@ class Ticket
     @customer_id = options['customer_id'].to_i()
   end
 
+  def save()
+
+  end
+
 end

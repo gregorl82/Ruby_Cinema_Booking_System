@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS films;
 
@@ -12,3 +13,9 @@ CREATE TABLE films (
   title VARCHAR,
   price DECIMAL(4,2)
 );
+
+CREATE TABLE tickets (
+  id SERIAL PRIMARY KEY,
+  film_id INT REFERENCES films(id) ON DELETE CASCADE,
+  customer_id INT REFERENCES customers(id) ON DELETE CASCADE
+)
