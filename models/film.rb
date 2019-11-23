@@ -18,6 +18,12 @@ class Film
     @id = result[0]['id'].to_i()
   end
 
+  def self.all()
+    sql = "SELECT * FROM films"
+    films = SqlRunner.run(sql)
+    return films.map {|film| Film.new(film)}
+  end
+
   def self.find_by_id(id)
     sql = "SELECT * FROM films WHERE id = $1"
     values = [id]
