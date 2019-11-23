@@ -43,6 +43,13 @@ class Customer
     return films.map {|film| Film.new(film)}
   end
 
+  def number_of_tickets_bought()
+    sql = "SELECT * FROM tickets WHERE customer_id = $1"
+    values = [@id]
+    result = SqlRunner.run(sql, values)
+    return result.count()
+  end
+
   def update()
     sql = "UPDATE customers SET (name, funds) = ($1, $2) WHERE id = $3"
     values = [@name, @funds, @id]
