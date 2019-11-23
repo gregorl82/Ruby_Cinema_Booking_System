@@ -1,3 +1,5 @@
+require_relative('../db/sqlrunner.rb')
+
 class Film
 
   attr_accessor :title, :price
@@ -14,6 +16,13 @@ class Film
     values = [@title, @price]
     result = SqlRunner.run(sql, values)
     @id = result[0]['id'].to_i()
+  end
+
+  def self.find_by_id(id)
+    sql = "SELECT * FROM films WHERE id = $1"
+    values = [id]
+    result = SqlRunner.run(sql, values)[0]
+    return Film.new(result)
   end
 
   def delete()
