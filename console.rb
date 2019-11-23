@@ -1,4 +1,5 @@
 require('pry')
+require_relative('models/customer.rb')
 
 customer1 = Customer.new(
   {

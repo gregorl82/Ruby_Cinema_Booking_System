@@ -1,3 +1,5 @@
+require_relative('../db/sqlrunner.rb')
+
 class Customer
 
   attr_accessor :name, :funds
@@ -7,6 +9,13 @@ class Customer
     @id = options['id'].to_i if options['id']
     @name = options['name']
     @funds = options['funds'].to_f
+  end
+
+  def save()
+    sql = "INSERT INTO customers (name, funds) VALUES ($1, $2) RETURNING id"
+    values = [@name, @funds]
+    result = SqlRunner.run(sql, values)
+    @id = result[0]['id'].to_i
   end
 
 end
