@@ -2,11 +2,14 @@ require('pry')
 require_relative('models/customer.rb')
 require_relative('models/film.rb')
 require_relative('models/ticket.rb')
+require_relative('models/screening.rb')
 
 Ticket.delete_all()
+Screening.delete_all()
 Customer.delete_all()
 Film.delete_all()
 
+# Customers
 
 customer1 = Customer.new(
   {
@@ -35,6 +38,8 @@ customer3 = Customer.new(
 
 customer3.save()
 
+# Films
+
 film1 = Film.new(
   {
     'title' => 'The Imitation Game',
@@ -61,6 +66,20 @@ film3 = Film.new(
 )
 
 film3.save()
+
+# Screenings
+
+screening1 = Screening.new(
+  {
+    'screening_time' => "18:45",
+    'capacity' => 50,
+    'film_id' => film1.id
+  }
+)
+
+screening1.save()
+
+# Tickets
 
 ticket1 = Ticket.new(
   {
