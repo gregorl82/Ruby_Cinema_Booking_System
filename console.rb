@@ -41,6 +41,24 @@ film1 = Film.new(
 
 film1.save()
 
+film2 = Film.new(
+  {
+    'title' => 'Solo: A Star Wars Story 3D',
+    'price' => 7.50
+  }
+)
+
+film2.save()
+
+film3 = Film.new(
+  {
+    'title' => 'Toy Story 4',
+    'price' => 3.95
+  }
+)
+
+film3.save()
+
 binding.pry
 
 nil
