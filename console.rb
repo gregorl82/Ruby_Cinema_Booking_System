@@ -14,6 +14,24 @@ customer1 = Customer.new(
 
 customer1.save()
 
+customer2 = Customer.new(
+  {
+    'name' => 'Lisa Cameron',
+    'funds' => 17.00
+  }
+)
+
+customer2.save()
+
+customer3 = Customer.new(
+  {
+    'name' => 'Michael Pringle',
+    'funds' => 15.50
+  }
+)
+
+customer3.save()
+
 film1 = Film.new(
   {
     'title' => 'The Imitation Game',
