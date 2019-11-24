@@ -35,8 +35,10 @@ class Customer
   def films()
     sql = "SELECT films.*
       FROM films
-      INNER JOIN tickets
+      INNER JOIN screenings
       ON films.id = film_id
+      INNER JOIN tickets
+      ON screenings.id = screening_id
       WHERE customer_id = $1"
     values = [@id]
     films = SqlRunner.run(sql, values)
