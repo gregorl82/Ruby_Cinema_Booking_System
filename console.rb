@@ -79,6 +79,26 @@ screening1 = Screening.new(
 
 screening1.save()
 
+screening2 = Screening.new(
+  {
+    'screening_time' => "20:05",
+    'capacity' => 70,
+    'film_id' => film1.id
+  }
+)
+
+screening2.save()
+
+screening3 = Screening.new(
+  {
+    'screening_time' => "14:20",
+    'capacity' => 35,
+    'film_id' => film2.id
+  }
+)
+
+screening3.save()
+
 # Tickets
 #
 # ticket1 = Ticket.new(
