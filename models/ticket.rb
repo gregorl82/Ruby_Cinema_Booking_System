@@ -14,29 +14,32 @@ class Ticket
   end
 
   def save()
-    # check screening isn't full, then save ticket to tickets table and assign id
+    # check screening isn't full
     screening = get_screening()
     if screening.capacity != 0
-      sql_ticket = "INSERT INTO tickets (screening_id, customer_id) VALUES ($1, $2) RETURNING id"
-      values_ticket = [@screening_id, @customer_id]
-      result_ticket = SqlRunner.run(sql_ticket, values_ticket)
-      @id = result_ticket[0]['id'].to_i()
-
-      # get film and customer then deduct film price from customer funds
-      film = get_film()
+      # check customer has enough funds
       customer = get_customer()
-      customer.funds -= film.price
+      film = get_film()
+      if customer.funds >= film.price
+        sql_ticket = "INSERT INTO tickets (screening_id, customer_id) VALUES ($1, $2) RETURNING id"
+        values_ticket = [@screening_id, @customer_id]
+        result_ticket = SqlRunner.run(sql_ticket, values_ticket)
+        @id = result_ticket[0]['id'].to_i()
 
-      # update customer funds in the customers table
-      sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
-      values_update_funds = [customer.funds, @customer_id]
-      SqlRunner.run(sql_update_funds, values_update_funds)
+        # deduct film price from customer funds and update customer funds
+        customer.funds -= film.price
+        sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
+        values_update_funds = [customer.funds, @customer_id]
+        SqlRunner.run(sql_update_funds, values_update_funds)
 
-      # reduce screening capacity by 1 and update screenings table
-      screening.capacity -= 1
-      sql_update_capacity = "UPDATE screenings SET capacity = $1 WHERE id = $2"
-      values_update_capacity = [screening.capacity, @screening_id]
-      SqlRunner.run(sql_update_capacity, values_update_capacity)
+        # reduce screening capacity by 1 and update screenings table
+        screening.capacity -= 1
+        sql_update_capacity = "UPDATE screenings SET capacity = $1 WHERE id = $2"
+        values_update_capacity = [screening.capacity, @screening_id]
+        SqlRunner.run(sql_update_capacity, values_update_capacity)
+      else
+        p "Not enough funds!"
+      end
     else
       p "Screening full!"
     end
