@@ -33,7 +33,7 @@ class Customer
   end
 
   def films()
-    sql = "SELECT films.*
+    sql = "SELECT DISTINCT films.*
       FROM films
       INNER JOIN screenings
       ON films.id = film_id
