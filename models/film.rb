@@ -64,7 +64,16 @@ class Film
   end
 
   def most_popular_showing()
-
+    screenings_array = get_screenings()
+    most_popular = screenings_array[0]
+    tickets_sold = most_popular.get_tickets_sold()
+    screenings_array.each do |screening|
+      if (screening.get_tickets_sold() > tickets_sold)
+        most_popular = screening
+        tickets_sold = screening.get_tickets_sold()
+      end
+    end
+    return most_popular
   end
 
   def update()
