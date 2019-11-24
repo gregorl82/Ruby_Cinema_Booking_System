@@ -1,4 +1,5 @@
 require_relative('../db/sqlrunner.rb')
+require_relative('screening.rb')
 
 class Film
 
@@ -53,6 +54,13 @@ class Film
     values = [@id]
     result = SqlRunner.run(sql, values)
     return result.count()
+  end
+
+  def get_screenings()
+    sql = "SELECT * FROM screenings WHERE film_id = $1"
+    values = [@id]
+    screenings = SqlRunner.run(sql, values)
+    return screenings.map {|screening| Screening.new(screening)}
   end
 
   def most_popular_showing()
