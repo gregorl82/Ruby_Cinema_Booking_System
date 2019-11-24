@@ -14,21 +14,32 @@ class Ticket
   end
 
   def save()
-    # save ticket to tickets table and assign id
-    sql_ticket = "INSERT INTO tickets (screening_id, customer_id) VALUES ($1, $2) RETURNING id"
-    values_ticket = [@screening_id, @customer_id]
-    result_ticket = SqlRunner.run(sql_ticket, values_ticket)
-    @id = result_ticket[0]['id'].to_i()
+    # check capacity of screening, save ticket to tickets table and assign id
+    screening = get_screening()
+    if screening.capacity != 0
+      sql_ticket = "INSERT INTO tickets (screening_id, customer_id) VALUES ($1, $2) RETURNING id"
+      values_ticket = [@screening_id, @customer_id]
+      result_ticket = SqlRunner.run(sql_ticket, values_ticket)
+      @id = result_ticket[0]['id'].to_i()
 
-    # get film price and customer funds then deduct film price from customer funds
-    film = get_film()
-    customer_funds = customer_funds()
-    customer_funds -= film.price
+      # get film price and customer funds then deduct film price from customer funds
+      film = get_film()
+      customer_funds = customer_funds()
+      customer_funds -= film.price
 
-    # update customer funds in the customers table
-    sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
-    values_update_funds = [customer_funds, @customer_id]
-    SqlRunner.run(sql_update_funds, values_update_funds)
+      # update customer funds in the customers table
+      sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
+      values_update_funds = [customer_funds, @customer_id]
+      SqlRunner.run(sql_update_funds, values_update_funds)
+
+      # reduce screening capacity by 1 and update screenings table
+      screening.capacity -= 1
+      sql_update_capacity = "UPDATE screenings SET capacity = $1 WHERE id = $2"
+      values_update_capacity = [screening.capacity, @screening_id]
+      SqlRunner.run(sql_update_capacity, values_update_capacity)
+    else
+      p "Screening full!"
+    end
   end
 
   def get_film()
