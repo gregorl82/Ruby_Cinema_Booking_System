@@ -80,42 +80,42 @@ screening1 = Screening.new(
 screening1.save()
 
 # Tickets
-
-ticket1 = Ticket.new(
-  {
-    'film_id' => film1.id,
-    'customer_id' => customer1.id
-  }
-)
-
-ticket1.save()
-
-ticket2 = Ticket.new(
-  {
-    'film_id' => film1.id,
-    'customer_id' => customer2.id
-  }
-)
-
-ticket2.save()
-
-ticket3 = Ticket.new(
-  {
-    'film_id' => film2.id,
-    'customer_id' => customer3.id
-  }
-)
-
-ticket3.save()
-
-ticket4 = Ticket.new(
-  {
-    'film_id' => film3.id,
-    'customer_id' => customer1.id
-  }
-)
-
-ticket4.save()
+#
+# ticket1 = Ticket.new(
+#   {
+#     'screening_id' => screening1.id,
+#     'customer_id' => customer1.id
+#   }
+# )
+#
+# ticket1.save()
+#
+# ticket2 = Ticket.new(
+#   {
+#     'screening_id' => screening1.id,
+#     'customer_id' => customer2.id
+#   }
+# )
+#
+# ticket2.save()
+#
+# ticket3 = Ticket.new(
+#   {
+#     'screening_id' => screening1.id,
+#     'customer_id' => customer3.id
+#   }
+# )
+#
+# ticket3.save()
+#
+# ticket4 = Ticket.new(
+#   {
+#     'screening_id' => screening2.id,
+#     'customer_id' => customer1.id
+#   }
+# )
+#
+# ticket4.save()
 
 binding.pry
 
