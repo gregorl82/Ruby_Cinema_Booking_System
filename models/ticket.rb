@@ -1,4 +1,5 @@
 require_relative('../db/sqlrunner.rb')
+require_relative('film.rb')
 
 class Ticket
 
@@ -18,23 +19,36 @@ class Ticket
     result_ticket = SqlRunner.run(sql_ticket, values_ticket)
     @id = result_ticket[0]['id'].to_i()
 
-    # get film price from films table using film_id
-    sql_price = "SELECT * FROM films where id = $1"
-    values_price = [@film_id]
-    result_price = SqlRunner.run(sql_price, values_price)
-    price = result_price[0]['price'].to_f()
+    # get film price and customer funds then deduct film price from customer funds
+    film = get_film()
+    customer_funds = customer_funds()
+    customer_funds -= film.price
 
-    # get customer funds from customers table using customer_id
-    sql_funds = "SELECT * FROM customers where id = $1"
-    values_funds = [@customer_id]
-    result_funds = SqlRunner.run(sql_funds, values_funds)
-    funds = result_funds[0]['funds'].to_f()
+    # update customer funds in the customers table
+    sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
+    values_update_funds = [customer_funds, @customer_id]
+    SqlRunner.run(sql_update_funds, values_update_funds)
+  end
 
-    # remove film price from customer funds and update customers table
-    funds -= price
-    sql_fund_update = "UPDATE customers SET funds = $1 WHERE id = $2"
-    values_fund_update = [funds, @customer_id]
-    SqlRunner.run(sql_fund_update, values_fund_update)
+  def get_film()
+    # use screening_id to search screenings table and get film_id
+    sql_get_film_id = "SELECT * FROM screenings WHERE id = $1"
+    values_get_film_id = [@screening_id]
+    result = SqlRunner.run(sql_get_film_id, values_get_film_id)
+    film_id = result[0]['film_id']
+
+    # use film_id to get film from films table
+    sql_get_film = "SELECT * FROM films WHERE id = $1"
+    values_get_film = [film_id]
+    output = SqlRunner.run(sql_get_film, values_get_film)[0]
+    return Film.new(output)
+  end
+
+  def customer_funds()
+    sql = "SELECT * FROM customers WHERE id = $1"
+    values = [@customer_id]
+    result = SqlRunner.run(sql, values)
+    return result[0]['funds'].to_f()
   end
 
   def self.all()
