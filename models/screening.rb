@@ -30,6 +30,13 @@ class Screening
     return Screening.new(result)
   end
 
+  def get_tickets_sold()
+    sql = "SELECT * FROM tickets WHERE screening_id = $1"
+    values = [@id]
+    screenings = SqlRunner.run(sql, values)
+    return screenings.count()
+  end
+
   def update()
     sql = "UPDATE screenings SET (screening_time, capacity, film_id) = ($1, $2, $3) WHERE id = $4"
     values = [@screening_time, @capacity, @film_id, @id]
