@@ -55,10 +55,6 @@ class Film
     return result.count()
   end
 
-  # def self.most_popular_screening()
-  #
-  # end
-
   def update()
     sql = "UPDATE films SET (title, price) = ($1, $2) WHERE id = $3"
     values = [@title, @price, @id]

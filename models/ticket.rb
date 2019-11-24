@@ -1,5 +1,6 @@
 require_relative('../db/sqlrunner.rb')
 require_relative('film.rb')
+require_relative('screening.rb')
 
 class Ticket
 
@@ -31,17 +32,22 @@ class Ticket
   end
 
   def get_film()
-    # use screening_id to search screenings table and get film_id
-    sql_get_film_id = "SELECT * FROM screenings WHERE id = $1"
-    values_get_film_id = [@screening_id]
-    result = SqlRunner.run(sql_get_film_id, values_get_film_id)
-    film_id = result[0]['film_id']
+    # use get_screening to search screenings table and get film_id
+    screening = get_screening()
+    film_id = screening.film_id
 
     # use film_id to get film from films table
     sql_get_film = "SELECT * FROM films WHERE id = $1"
     values_get_film = [film_id]
     output = SqlRunner.run(sql_get_film, values_get_film)[0]
     return Film.new(output)
+  end
+
+  def get_screening()
+    sql = "SELECT * FROM screenings WHERE id = $1"
+    values = [@screening_id]
+    result = SqlRunner.run(sql, values)[0]
+    return Screening.new(result)
   end
 
   def customer_funds()
