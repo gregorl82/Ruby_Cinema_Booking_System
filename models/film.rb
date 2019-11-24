@@ -32,11 +32,13 @@ class Film
   end
 
   def customers()
-    sql = "SELECT customers.*
+    sql = "SELECT DISTINCT customers.*
       FROM customers
       INNER JOIN tickets
       ON customers.id = customer_id
-      WHERE film_id= $1"
+      INNER JOIN screenings
+      ON screenings.id = screening_id
+      WHERE film_id = $1"
     values = [@id]
     customers = SqlRunner.run(sql, values)
     return customers.map {|customer| Customer.new(customer)}
