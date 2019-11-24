@@ -45,11 +45,19 @@ class Film
   end
 
   def ticket_count()
-    sql = "SELECT * FROM tickets WHERE film_id = $1"
+    sql = "SELECT tickets.*
+      FROM tickets
+      INNER JOIN screenings
+      ON screening_id = screenings.id
+      WHERE film_id = $1"
     values = [@id]
     result = SqlRunner.run(sql, values)
     return result.count()
   end
+
+  # def self.most_popular_screening()
+  #
+  # end
 
   def update()
     sql = "UPDATE films SET (title, price) = ($1, $2) WHERE id = $3"
