@@ -30,6 +30,12 @@ class Screening
     return Screening.new(result)
   end
 
+  def update()
+    sql = "UPDATE screenings SET (screening_time, capacity, film_id) = ($1, $2, $3) WHERE id = $4"
+    values = [@screening_time, @capacity, @film_id, @id]
+    SqlRunner.run(sql, values)
+  end
+
   def delete()
     sql = "DELETE FROM screenings WHERE id = $1"
     values = [@id]
