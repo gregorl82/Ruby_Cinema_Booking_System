@@ -14,7 +14,7 @@ class Ticket
   end
 
   def save()
-    # check capacity of screening, save ticket to tickets table and assign id
+    # check screening isn't full, then save ticket to tickets table and assign id
     screening = get_screening()
     if screening.capacity != 0
       sql_ticket = "INSERT INTO tickets (screening_id, customer_id) VALUES ($1, $2) RETURNING id"
@@ -22,14 +22,14 @@ class Ticket
       result_ticket = SqlRunner.run(sql_ticket, values_ticket)
       @id = result_ticket[0]['id'].to_i()
 
-      # get film price and customer funds then deduct film price from customer funds
+      # get film and customer then deduct film price from customer funds
       film = get_film()
-      customer_funds = customer_funds()
-      customer_funds -= film.price
+      customer = get_customer()
+      customer.funds -= film.price
 
       # update customer funds in the customers table
       sql_update_funds = "UPDATE customers SET funds = $1 WHERE id = $2"
-      values_update_funds = [customer_funds, @customer_id]
+      values_update_funds = [customer.funds, @customer_id]
       SqlRunner.run(sql_update_funds, values_update_funds)
 
       # reduce screening capacity by 1 and update screenings table
@@ -43,14 +43,10 @@ class Ticket
   end
 
   def get_film()
-    # use get_screening to search screenings table and get film_id
     screening = get_screening()
-    film_id = screening.film_id
-
-    # use film_id to get film from films table
-    sql_get_film = "SELECT * FROM films WHERE id = $1"
-    values_get_film = [film_id]
-    output = SqlRunner.run(sql_get_film, values_get_film)[0]
+    sql = "SELECT * FROM films WHERE id = $1"
+    values = [screening.film_id]
+    output = SqlRunner.run(sql, values)[0]
     return Film.new(output)
   end
 
@@ -61,11 +57,11 @@ class Ticket
     return Screening.new(result)
   end
 
-  def customer_funds()
+  def get_customer()
     sql = "SELECT * FROM customers WHERE id = $1"
     values = [@customer_id]
-    result = SqlRunner.run(sql, values)
-    return result[0]['funds'].to_f()
+    result = SqlRunner.run(sql, values)[0]
+    return Customer.new(result)
   end
 
   def self.all()
