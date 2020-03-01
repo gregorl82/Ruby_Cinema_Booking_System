@@ -1,4 +1,4 @@
-<h1>SQL Cinema Booking System</h1>
+<h1>Ruby Cinema Booking System</h1>
 
 <p>Create a system that handles bookings for a newly built cinema.</p>
 
